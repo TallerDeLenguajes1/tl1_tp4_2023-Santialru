@@ -10,10 +10,13 @@ int Duracion; // entre 10 – 10
 struct Tarea *tareaPendiente;
 struct Tarea *tareaRealizada;
 
-};
+}typedef tarea;
+
+tarea buscarTarea(tarea **tarea);
 
 
 int main (){
+
     int cantTareas,bool;
     printf("ingrese cuantas tareas debe cargar: ");
     scanf("%d", &cantTareas);
@@ -56,9 +59,15 @@ int main (){
             tareaPendiente[i]=NULL;
         }
         
-
-
     }
     
     return 0;
+}
+
+tarea buscarTarea(tarea **tarea){
+    int i;
+    printf("ingrese el numero de tarea (ID): ");
+    scanf("%d", &i);
+
+    return tarea[i];
 }
