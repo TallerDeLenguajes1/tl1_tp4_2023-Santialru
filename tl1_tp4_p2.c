@@ -7,7 +7,9 @@ struct Tarea {
 int TareaID; //Numerado en ciclo iterativo
 char *Descripcion;
 int Duracion; // entre 10 – 100
-};
+}typedef tarea;
+
+tarea buscarTareaPalabra(tarea *tarea, int cantidad);
 
 
 int main (){
@@ -44,6 +46,7 @@ int main (){
         punt[i]->Descripcion = malloc(sizeof(char)*strlen(auxi+1));
         strcpy(punt[i]->Descripcion,auxi);
         printf("\nDescripcion: %s", punt[i]->Descripcion);
+        
 
         punt[i]->Duracion = 10+rand()%110;
         printf("\nDuracion: %d", punt[i]->Duracion);
@@ -88,6 +91,10 @@ int main (){
         
     }
     free(TareasPendientes);
+
+    
+    tarea tareabuscada=buscarTareaPalabra(punt,cantTareas);
+
    
     for (int u = 0; u < cantTareas; u++)
     {
@@ -95,6 +102,26 @@ int main (){
         free(punt[u]);
     }
     free(punt);
-    
+
     return 0;
+}
+
+tarea buscarTareaPalabra(tarea *tarea, int cantidad){
+    char auxiliar[50];
+
+    printf("ingrese alguna palabra de la tarea: ");
+    scanf("%s", &auxiliar);
+    
+    char *pala= malloc(sizeof(char)*strlen(auxiliar));
+    
+    strcpy(pala,auxiliar);
+
+    for (int i = 0; i < cantidad; i++)
+    {
+        if(strstr(tarea[i].Descripcion,auxiliar)!=NULL){
+            return tarea[i];
+        }
+    }
+    
+
 }
