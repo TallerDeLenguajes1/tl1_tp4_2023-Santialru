@@ -9,7 +9,7 @@ char *Descripcion;
 int Duracion; // entre 10 – 100
 }typedef tarea;
 
-tarea buscarTareaPalabra(tarea *tarea, int cantidad);
+tarea buscarTareaPalabra(tarea **tareas, int cantidad);
 
 
 int main (){
@@ -94,6 +94,10 @@ int main (){
 
     
     tarea tareabuscada=buscarTareaPalabra(punt,cantTareas);
+    printf("\n-----Resultado de la busqueda: ");
+    printf("\nTAREA N°%d", tareabuscada.TareaID);
+    printf("\nDescripcion: %s", tareabuscada.Descripcion);
+    printf("\nDuracion: %d", tareabuscada.Duracion);
 
    
     for (int u = 0; u < cantTareas; u++)
@@ -106,7 +110,7 @@ int main (){
     return 0;
 }
 
-tarea buscarTareaPalabra(tarea *tarea, int cantidad){
+tarea buscarTareaPalabra(tarea **tareas, int cantidad){
     char auxiliar[50];
 
     printf("ingrese alguna palabra de la tarea: ");
@@ -118,8 +122,8 @@ tarea buscarTareaPalabra(tarea *tarea, int cantidad){
 
     for (int i = 0; i < cantidad; i++)
     {
-        if(strstr(tarea[i].Descripcion,auxiliar)!=NULL){
-            return tarea[i];
+        if(strstr(tareas[i]->Descripcion,auxiliar)!=NULL){
+            return **tareas;
         }
     }
     
