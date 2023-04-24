@@ -9,35 +9,41 @@ char *Descripcion;
 int Duracion; // entre 10 – 100
 }typedef tarea;
 
-tarea buscarTareaPalabra(tarea **tareas, int cantidad);
+struct Nodo{
+    tarea T;
+    struct Nodo *Siguiente;
+};
 
-tarea buscarTarea(tarea *tarea);
+struct Nodo *CrearListaVacia();
+struct Nodo *CrearNodo(tarea t);
+void InsertarNodo(struct Nodo ** Start, tarea t);
+void EliminarNodo(struct Nodo *Start, tarea t);
+
 
 int main (){
-    int cantTareas,bool,busc, tipoBusc;
-    printf("ingrese cuantas tareas debe cargar: ");
-    scanf("%d", &cantTareas);
+    int tareabool,bool, i;
+    printf("desea cargar una tarea?(1 para si, 0 para no): ");
+    scanf("%d", &tareabool);
 
-    struct Tarea **punt = (struct Tarea **)malloc(sizeof(struct Tarea *)*cantTareas);
-    struct Tarea **TareasPendientes = malloc(sizeof(struct Tarea *)*cantTareas);
-    struct Tarea **TareasRealizadas = malloc(sizeof(struct Tarea *)*cantTareas);
-    struct Tarea **TareasPendientes = (struct Tarea **)malloc(sizeof(struct Tarea *)*cantTareas);
-    struct Tarea **TareasRealizadas = (struct Tarea **)malloc(sizeof(struct Tarea *)*cantTareas);
+    struct Tarea **punt = (struct Tarea **)malloc(sizeof(struct Tarea *));
+    
+    struct Nodo *tareasRealizadas = NULL;
+    struct Nodo *tareasPendientes = NULL;
+    
+    tareasRealizadas = CrearListaVacia();
+    tareasPendientes = CrearListaVacia();
 
 
-    for (int j = 0; j < cantTareas; j++) //inicializo la matriz en null
-    {
-        punt[j]=NULL;
-        TareasPendientes[j]=NULL;
-        TareasRealizadas[j]=NULL;
-    }
+    // for (int j = 0; j < cantTareas; j++) //inicializo la matriz en null
+    // {
+    //     punt[j]=NULL;
+    // }
     
 
-    for (int i = 0; i < cantTareas; i++)
+    while(tareabool != 0)
     {
+        
         punt[i]=malloc(sizeof(struct Tarea));
-        // TareasPendientes[i]=malloc(sizeof(struct Tarea));
-        // TareasRealizadas[i]=malloc(sizeof(struct Tarea));
         
         punt[i]->TareaID = i;
         printf("\nTAREA N° %d", punt[i]->TareaID);
@@ -57,65 +63,41 @@ int main (){
         printf("\n¿se realizo esta tarea?(1 para si,0 para no): ");
         scanf("%d", &bool);
         
-        TareasPendientes[i]=punt[i];
-        if (bool==1)
-        {
-            TareasRealizadas[i]=punt[i];
-            TareasPendientes[i]=NULL;
-        }
-    
-        // free(punt[i]->Descripcion);
-        // free(punt[i]);
-    }
-    
+        InsertarNodo(&tareasPendientes, *punt[i]);
 
-    printf("\n-------Tareas Realizadas-------");
-    for (int z = 0; z < cantTareas; z++)
-    {
-        if (TareasRealizadas[z]!=NULL)
+        if (bool == 1);
         {
-            printf("\nTarea N°%d", TareasRealizadas[z]->TareaID);
-            printf("\nDescripcion: %s", TareasRealizadas[z]->Descripcion);
-            printf("\nDuracion: %d", TareasRealizadas[z]->Duracion);
+           InsertarNodo(&tareasRealizadas, *punt[i]);
+           EliminarNodo(tareasPendientes, *punt[i]);
         }
-        
-    }
-    free(TareasRealizadas);
-    
-    printf("\n-------Tareas Pendientes-------");
-    for (int y = 0; y < cantTareas; y++)
-    {
-        if (TareasPendientes[y]!=NULL)
-        {
-            printf("\nTarea N°%d", TareasPendientes[y]->TareaID);
-            printf("\nDescripcion: %s", TareasPendientes[y]->Descripcion);
-            printf("\nDuracion: %d", TareasPendientes[y]->Duracion);
-        }
-        
-    }
-    free(TareasPendientes);
 
-    printf("\ningrese el tipo de busqueda(1 por id, 2 por palabra): ");
-    scanf("%d", &tipoBusc);
-
-    if (tipoBusc == 2);
+        printf("\ndesea cargar una tarea?(1 para si, 0 para no): ");
+        scanf("%d", &tareabool);
+        i++;
+    }
+    struct Nodo *auxi = tareasRealizadas;
+    struct Nodo *auxi2 = tareasPendientes;
+    
+    while (auxi != NULL);
     {
-        tarea tareabuscada=buscarTareaPalabra(punt,cantTareas);
-        printf("\n-----Resultado de la busqueda: ");
-        printf("\nTAREA N°%d", tareabuscada.TareaID);
-        printf("\nDescripcion: %s", tareabuscada.Descripcion);
-        printf("\nDuracion: %d", tareabuscada.Duracion);
-    }else
+        printf("\n------TAREAS REALIZADAS-------");
+        printf("\nTarea N°%d", auxi->T.TareaID);
+        printf("\nDescripcion: %s", auxi->T.Descripcion);
+        printf("\nDuracion: %d", auxi->T.Duracion);
+        auxi = auxi->Siguiente;
+    }
+    while (auxi2 != NULL);
     {
-        tarea tareabus = buscarTarea(*punt);
-        printf("\n------tarea buscada--------");
-        printf("\ntarea N°%d", tareabus.TareaID);
-        printf("\ndescripcion: %s", tareabus.Descripcion);
-        printf("\nduracion: %d", tareabus.Duracion);
+        printf("\n------TAREAS PENDIENTES-------");
+        printf("\nTarea N°%d", auxi2->T.TareaID);
+        printf("\nDescripcion: %s", auxi2->T.Descripcion);
+        printf("\nDuracion: %d", auxi2->T.Duracion);
+        auxi2 = auxi2->Siguiente;
     }
     
     
-    for (int u = 0; u < cantTareas; u++)
+    /*-------------------liberar memoria---------------*/
+    for (int u = 0; u == i; u++)
     {
         free(punt[u]->Descripcion);
         free(punt[u]);
@@ -125,32 +107,34 @@ int main (){
     return 0;
 }
 
-tarea buscarTareaPalabra(tarea **tareas, int cantidad){
-    char auxiliar[50];
-
-    printf("\ningrese alguna palabra de la tarea: ");
-    scanf("%s", &auxiliar);
-    
-    char *pala= malloc(sizeof(char)*strlen(auxiliar));
-    
-    strcpy(pala,auxiliar);
-
-    for (int i = 0; i < cantidad; i++)
-    {
-        if(strstr(tareas[i]->Descripcion,auxiliar)!=NULL){
-            return **tareas;
-        }
-    }
-    
-
-    
-    return 0;
+struct Nodo *CrearListaVacia(){
+    return NULL;
 }
 
-tarea buscarTarea(tarea *tarea){
-    int i;
-    printf("\ningrese el numero de tarea (ID): ");
-    scanf("%d", &i);
+struct Nodo *CrearNodo(tarea t){
+    struct Nodo *Nnodo =(struct Nodo*)malloc(sizeof(struct Nodo));
+    Nnodo->T = t;
+    Nnodo->Siguiente= NULL;
+    return Nnodo;
+}
 
-    return tarea[i];
+void InsertarNodo(struct Nodo ** Start, tarea t){
+    struct Nodo * NuevoNodo= CrearNodo(t);
+    NuevoNodo->Siguiente = *Start;
+    *Start = NuevoNodo;
+}
+
+void EliminarNodo(struct Nodo *Start, tarea t){
+    struct Nodo * Aux = Start;
+    struct Nodo *AuxAnterior = Start;
+
+    while (Aux && Aux->T.TareaID != t.TareaID){
+        AuxAnterior = Aux;
+        Aux = Aux->Siguiente;
+    }
+    if(Aux){
+        AuxAnterior->Siguiente = Aux->Siguiente;
+        free(Aux);
+    }
+
 }
