@@ -14,6 +14,7 @@ tarea buscarTareaPalabra(tarea **tareas, int cantidad);
 tarea buscarTarea(tarea *tarea);
 
 int main (){
+    srand(time(NULL));
     int cantTareas,bool,busc, tipoBusc;
     printf("ingrese cuantas tareas debe cargar: ");
     scanf("%d", &cantTareas);
@@ -21,8 +22,6 @@ int main (){
     struct Tarea **punt = (struct Tarea **)malloc(sizeof(struct Tarea *)*cantTareas);
     struct Tarea **TareasPendientes = malloc(sizeof(struct Tarea *)*cantTareas);
     struct Tarea **TareasRealizadas = malloc(sizeof(struct Tarea *)*cantTareas);
-    struct Tarea **TareasPendientes = (struct Tarea **)malloc(sizeof(struct Tarea *)*cantTareas);
-    struct Tarea **TareasRealizadas = (struct Tarea **)malloc(sizeof(struct Tarea *)*cantTareas);
 
 
     for (int j = 0; j < cantTareas; j++) //inicializo la matriz en null
@@ -36,8 +35,6 @@ int main (){
     for (int i = 0; i < cantTareas; i++)
     {
         punt[i]=malloc(sizeof(struct Tarea));
-        // TareasPendientes[i]=malloc(sizeof(struct Tarea));
-        // TareasRealizadas[i]=malloc(sizeof(struct Tarea));
         
         punt[i]->TareaID = i;
         printf("\nTAREA N° %d", punt[i]->TareaID);
@@ -64,8 +61,6 @@ int main (){
             TareasPendientes[i]=NULL;
         }
     
-        // free(punt[i]->Descripcion);
-        // free(punt[i]);
     }
     
 
@@ -98,7 +93,7 @@ int main (){
     printf("\ningrese el tipo de busqueda(1 por id, 2 por palabra): ");
     scanf("%d", &tipoBusc);
 
-    if (tipoBusc == 2);
+    if (tipoBusc == 2)
     {
         tarea tareabuscada=buscarTareaPalabra(punt,cantTareas);
         printf("\n-----Resultado de la busqueda: ");
@@ -142,9 +137,6 @@ tarea buscarTareaPalabra(tarea **tareas, int cantidad){
         }
     }
     
-
-    
-    return 0;
 }
 
 tarea buscarTarea(tarea *tarea){
