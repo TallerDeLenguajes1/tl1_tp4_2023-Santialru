@@ -3,6 +3,7 @@
 #include <time.h>
 #include <string.h>
 
+/*----------ESTRUCTURAS---------*/
 struct Tarea {
 int TareaID; //Numerado en ciclo iterativo
 char *Descripcion;
@@ -14,16 +15,18 @@ struct Nodo{
     struct Nodo *Siguiente;
 };
 
+/*---------FUNCIONES-------------*/
 struct Nodo *CrearListaVacia();
 struct Nodo *CrearNodo(tarea t);
 void InsertarNodo(struct Nodo ** Start, tarea t);
 void EliminarNodo(struct Nodo **Start, tarea t);
 struct Nodo *buscarNodo(struct Nodo * Start);
+void MostrarDatos (struct Nodo * Start);
 
 
 int main (){ 
     srand(time(NULL));
-    int tareabool,bool, i, busbool;
+    int tareabool,estado, i, busbool,list;
     printf("¿Desea cargar una tarea?(1 para si, 0 para no): ");
     scanf("%d", &tareabool);
 
@@ -32,15 +35,12 @@ int main (){
     struct Nodo *tareasRealizadas = NULL;
     struct Nodo *tareasPendientes = NULL;
     struct Nodo *todasTareas = NULL;
+    struct Nodo *tareasEnProceso = NULL;
     
     tareasRealizadas = CrearListaVacia();
     tareasPendientes = CrearListaVacia();
     todasTareas = CrearListaVacia();
-
-    // for (int j = 0; j < cantTareas; j++) //inicializo la matriz en null
-    // {
-    //     
-    // }
+    tareasEnProceso = CrearListaVacia();
     
 
     while(tareabool != 0)
@@ -63,25 +63,30 @@ int main (){
         punt[i]->Duracion = 10+rand()%110;
         printf("\nDuracion: %d", punt[i]->Duracion);
 
-        printf("\n¿Se realizo esta tarea?(1 para si,0 para no): ");
-        scanf("%d", &bool);
+        printf("\n¿Se realizo esta tarea?(2:en proceso, 1: si,0: no): ");
+        scanf("%d", &estado);
         
         InsertarNodo(&tareasPendientes, *punt[i]);
         InsertarNodo(&todasTareas, *punt[i]);
 
 
-        if (bool == 1)
+        if (estado == 1)
         {
-           InsertarNodo(&tareasRealizadas, *punt[i]);
-           EliminarNodo(&tareasPendientes, *punt[i]);
+            InsertarNodo(&tareasRealizadas, *punt[i]);
+            EliminarNodo(&tareasPendientes, *punt[i]);
+        }else if (estado == 2)
+        {
+            InsertarNodo(&tareasEnProceso, *punt[i]);
+            EliminarNodo(&tareasPendientes, *punt[i]);
         }
-
+        
         printf("\ndesea cargar una tarea?(1 para si, 0 para no): ");
         scanf("%d", &tareabool);
         i++;
     }
     struct Nodo *auxi = tareasRealizadas;
     struct Nodo *auxi2 = tareasPendientes;
+    struct Nodo *auxi3 = tareasEnProceso;
     
     while (auxi != NULL)
     {
@@ -100,6 +105,16 @@ int main (){
         auxi2 = auxi2->Siguiente;
     }
     
+    while (auxi3 != NULL)
+    {
+        printf("\n------TAREAS EN PROCESO-------");
+        printf("\nTarea N°%d", auxi3->T.TareaID);
+        printf("\nDescripcion: %s", auxi3->T.Descripcion);
+        printf("\nDuracion: %d", auxi3->T.Duracion);
+        auxi3 = auxi3->Siguiente;
+    }
+
+    
     printf("\nDesea realizar una busqueda? (1:si, 0:no): ");
     scanf("%d", &busbool);
     if (busbool == 1)
@@ -113,6 +128,28 @@ int main (){
         busqueda = busqueda->Siguiente;
     }
     
+    printf("\nDesea mostrar la cantidad de tareas y el tiempo que tomaran o tomaron?(1:si, 0:no): ");
+    scanf("%d", &busbool);
+
+    if (busbool == 1)
+    {
+        printf("elije que lista quieres mostrar: (1:Tarea Realizada, 2:Tarea pendiente, 3:Tarea en proceso)");
+        scanf("%d", &list);
+
+        switch (list)
+        {
+        case 1:
+            MostrarDatos(tareasRealizadas);
+            break;
+        case:2
+            MostrarDatos(tareasPendientes);
+            break;
+        case 3:
+            MostrarDatos(tareasEnProceso);
+        default:
+            break;
+        }
+    }
     
     
     /*-------------------liberar memoria---------------*/
@@ -194,4 +231,17 @@ struct Nodo *buscarNodo(struct Nodo * Start){
         }
         return aux;
     }
+}
+
+void MostrarDatos (struct Nodo * Start){
+    int cont, time;
+
+    while (Start != NULL)
+    {
+        cont+=1;
+        time += Start->T.Duracion
+    }
+    printf("cantidad de tareas: %d", &cont);
+    printf("tiempo total: %d minutos", &time);
+    
 }
