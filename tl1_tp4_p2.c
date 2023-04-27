@@ -18,12 +18,12 @@ struct Nodo *CrearListaVacia();
 struct Nodo *CrearNodo(tarea t);
 void InsertarNodo(struct Nodo ** Start, tarea t);
 void EliminarNodo(struct Nodo **Start, tarea t);
-struct Nodo *buscarNodo(struct Nodo * Start, tarea t);
+struct Nodo *buscarNodo(struct Nodo * Start);
 
 
 int main (){ 
     srand(time(NULL));
-    int tareabool,bool, i;
+    int tareabool,bool, i, busbool;
     printf("¿Desea cargar una tarea?(1 para si, 0 para no): ");
     scanf("%d", &tareabool);
 
@@ -31,10 +31,11 @@ int main (){
     
     struct Nodo *tareasRealizadas = NULL;
     struct Nodo *tareasPendientes = NULL;
+    struct Nodo *todasTareas = NULL;
     
     tareasRealizadas = CrearListaVacia();
     tareasPendientes = CrearListaVacia();
-
+    todasTareas = CrearListaVacia();
 
     // for (int j = 0; j < cantTareas; j++) //inicializo la matriz en null
     // {
@@ -66,6 +67,7 @@ int main (){
         scanf("%d", &bool);
         
         InsertarNodo(&tareasPendientes, *punt[i]);
+        InsertarNodo(&todasTareas, *punt[i]);
 
 
         if (bool == 1)
@@ -98,7 +100,19 @@ int main (){
         auxi2 = auxi2->Siguiente;
     }
     
+    printf("\nDesea realizar una busqueda? (1:si, 0:no): ");
+    scanf("%d", &busbool);
+    if (busbool == 1)
+    {
+        struct Nodo * busqueda = buscarNodo(todasTareas);
 
+        printf("\n------TAREA BUSCADA-------");
+        printf("\nTarea N°%d", busqueda->T.TareaID);
+        printf("\nDescripcion: %s", busqueda->T.Descripcion);
+        printf("\nDuracion: %d", busqueda->T.Duracion);
+        busqueda = busqueda->Siguiente;
+    }
+    
     
     
     /*-------------------liberar memoria---------------*/
@@ -150,3 +164,34 @@ void EliminarNodo(struct Nodo **Start, tarea tare){
     }
 }
 
+
+struct Nodo *buscarNodo(struct Nodo * Start){
+    int tipo;
+    printf("\ningrese el tipo de busqueda (1:por palabra, 0:por id): ");
+    scanf("%d", &tipo);
+
+    if (tipo == 1)
+    {
+        char busque[50];
+        printf("\nIngrese la palabra buscada: ");
+        gets(busque);
+
+        struct Nodo * aux = Start;
+        while (aux && aux->T.Descripcion != busque)
+        {
+            aux = aux->Siguiente;
+        }
+        return aux;
+    }else
+    {
+        int id;
+        printf("ingrse el id buscado: ");
+        scanf("%d", &id);
+        struct Nodo * aux = Start;
+        while (aux && aux->T.TareaID != id)
+        {
+            aux = aux->Siguiente;
+        }
+        return aux;
+    }
+}
