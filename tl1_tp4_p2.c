@@ -17,12 +17,14 @@ struct Nodo{
 struct Nodo *CrearListaVacia();
 struct Nodo *CrearNodo(tarea t);
 void InsertarNodo(struct Nodo ** Start, tarea t);
-void EliminarNodo(struct Nodo *Start, tarea t);
+void EliminarNodo(struct Nodo **Start, tarea t);
+struct Nodo *buscarNodo(struct Nodo * Start, tarea t);
 
 
-int main (){
+int main (){ 
+    srand(time(NULL));
     int tareabool,bool, i;
-    printf("desea cargar una tarea?(1 para si, 0 para no): ");
+    printf("¿Desea cargar una tarea?(1 para si, 0 para no): ");
     scanf("%d", &tareabool);
 
     struct Tarea **punt = (struct Tarea **)malloc(sizeof(struct Tarea *));
@@ -36,39 +38,40 @@ int main (){
 
     // for (int j = 0; j < cantTareas; j++) //inicializo la matriz en null
     // {
-    //     punt[j]=NULL;
+    //     
     // }
     
 
     while(tareabool != 0)
     {
-        
+        punt[i]=NULL;
         punt[i]=malloc(sizeof(struct Tarea));
         
         punt[i]->TareaID = i;
         printf("\nTAREA N° %d", punt[i]->TareaID);
         
-        char auxi[50];
+        char auxili[50];
         printf("\nIngrese descripcion de la tarea: ");
-        scanf("%s", &auxi);
-        fflush;
-        punt[i]->Descripcion = malloc(sizeof(char)*strlen(auxi+1));
-        strcpy(punt[i]->Descripcion,auxi);
+        scanf("%s", &auxili);
+        fflush(stdin);
+        punt[i]->Descripcion = malloc(sizeof(char)*strlen(auxili+1));
+        strcpy(punt[i]->Descripcion,auxili);
         printf("\nDescripcion: %s", punt[i]->Descripcion);
         
 
         punt[i]->Duracion = 10+rand()%110;
         printf("\nDuracion: %d", punt[i]->Duracion);
 
-        printf("\n¿se realizo esta tarea?(1 para si,0 para no): ");
+        printf("\n¿Se realizo esta tarea?(1 para si,0 para no): ");
         scanf("%d", &bool);
         
         InsertarNodo(&tareasPendientes, *punt[i]);
 
-        if (bool == 1);
+
+        if (bool == 1)
         {
            InsertarNodo(&tareasRealizadas, *punt[i]);
-           EliminarNodo(tareasPendientes, *punt[i]);
+           EliminarNodo(&tareasPendientes, *punt[i]);
         }
 
         printf("\ndesea cargar una tarea?(1 para si, 0 para no): ");
@@ -78,7 +81,7 @@ int main (){
     struct Nodo *auxi = tareasRealizadas;
     struct Nodo *auxi2 = tareasPendientes;
     
-    while (auxi != NULL);
+    while (auxi != NULL)
     {
         printf("\n------TAREAS REALIZADAS-------");
         printf("\nTarea N°%d", auxi->T.TareaID);
@@ -86,7 +89,7 @@ int main (){
         printf("\nDuracion: %d", auxi->T.Duracion);
         auxi = auxi->Siguiente;
     }
-    while (auxi2 != NULL);
+    while (auxi2 != NULL)
     {
         printf("\n------TAREAS PENDIENTES-------");
         printf("\nTarea N°%d", auxi2->T.TareaID);
@@ -95,9 +98,11 @@ int main (){
         auxi2 = auxi2->Siguiente;
     }
     
+
+    
     
     /*-------------------liberar memoria---------------*/
-    for (int u = 0; u == i; u++)
+    for (int u = 0; u < i+1; u++)
     {
         free(punt[u]->Descripcion);
         free(punt[u]);
@@ -124,17 +129,24 @@ void InsertarNodo(struct Nodo ** Start, tarea t){
     *Start = NuevoNodo;
 }
 
-void EliminarNodo(struct Nodo *Start, tarea t){
-    struct Nodo * Aux = Start;
-    struct Nodo *AuxAnterior = Start;
 
-    while (Aux && Aux->T.TareaID != t.TareaID){
+void EliminarNodo(struct Nodo **Start, tarea tare){
+    struct Nodo *Aux = *Start;
+    struct Nodo *AuxAnterior = NULL;
+
+    while (Aux && Aux->T.TareaID != tare.TareaID){
         AuxAnterior = Aux;
         Aux = Aux->Siguiente;
     }
+
     if(Aux){
-        AuxAnterior->Siguiente = Aux->Siguiente;
+        if(Aux == *Start){
+            *Start = Aux->Siguiente;
+        }
+        else{
+            AuxAnterior->Siguiente = Aux->Siguiente;
+        }
         free(Aux);
     }
-
 }
+
