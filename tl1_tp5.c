@@ -22,6 +22,7 @@ void InsertarNodo(struct Nodo ** Start, tarea t);
 void EliminarNodo(struct Nodo **Start, tarea t);
 struct Nodo *buscarNodo(struct Nodo * Start);
 void MostrarDatos (struct Nodo * Start);
+void MoverTareas (struct Nodo ** realizadas, struct Nodo ** pendientes, struct Nodo ** enProceso, struct Nodo ** todas, tarea t);
 
 
 int main (){ 
@@ -63,55 +64,37 @@ int main (){
         punt[i]->Duracion = 10+rand()%110;
         printf("\nDuracion: %d", punt[i]->Duracion);
 
-        printf("\n¿Se realizo esta tarea?(2:en proceso, 1: si,0: no): ");
-        scanf("%d", &estado);
-        
-        InsertarNodo(&tareasPendientes, *punt[i]);
-        InsertarNodo(&todasTareas, *punt[i]);
+        tarea * auxi = punt[i]; 
 
-
-        if (estado == 1)
-        {
-            InsertarNodo(&tareasRealizadas, *punt[i]);
-            EliminarNodo(&tareasPendientes, *punt[i]);
-        }else if (estado == 2)
-        {
-            InsertarNodo(&tareasEnProceso, *punt[i]);
-            EliminarNodo(&tareasPendientes, *punt[i]);
-        }
+        InsertarNodo(&tareasPendientes, *auxi);
+        InsertarNodo(&todasTareas, *auxi);
         
-        printf("\ndesea cargar una tarea?(1 para si, 0 para no): ");
+        MoverTareas(&tareasRealizadas, &tareasPendientes, &tareasEnProceso, 
+        &todasTareas, *auxi);
+
+        printf("\nDesea cargar una tarea?(1 para si, 0 para no): ");
         scanf("%d", &tareabool);
+        
+        
         i++;
     }
-    struct Nodo *auxi = tareasRealizadas;
+    struct Nodo *auxi1 = tareasRealizadas;
     struct Nodo *auxi2 = tareasPendientes;
     struct Nodo *auxi3 = tareasEnProceso;
-    
-    while (auxi != NULL)
+    if (auxi1 != NULL)
     {
-        printf("\n------TAREAS REALIZADAS-------");
-        printf("\nTarea N°%d", auxi->T.TareaID);
-        printf("\nDescripcion: %s", auxi->T.Descripcion);
-        printf("\nDuracion: %d", auxi->T.Duracion);
-        auxi = auxi->Siguiente;
+        printf("\n----TAREAS REALIZADAS------");
+        MostrarDatos(auxi1);
     }
-    while (auxi2 != NULL)
+    if (auxi2 != NULL)
     {
-        printf("\n------TAREAS PENDIENTES-------");
-        printf("\nTarea N°%d", auxi2->T.TareaID);
-        printf("\nDescripcion: %s", auxi2->T.Descripcion);
-        printf("\nDuracion: %d", auxi2->T.Duracion);
-        auxi2 = auxi2->Siguiente;
+        printf("\n----TAREAS PENDIENTES------");
+        MostrarDatos(auxi2);
     }
-    
-    while (auxi3 != NULL)
+    if (tareasEnProceso != NULL)
     {
-        printf("\n------TAREAS EN PROCESO-------");
-        printf("\nTarea N°%d", auxi3->T.TareaID);
-        printf("\nDescripcion: %s", auxi3->T.Descripcion);
-        printf("\nDuracion: %d", auxi3->T.Duracion);
-        auxi3 = auxi3->Siguiente;
+        printf("\n----TAREAS EN PROCESO------");
+        MostrarDatos(tareasEnProceso);
     }
 
     
@@ -128,28 +111,6 @@ int main (){
         busqueda = busqueda->Siguiente;
     }
     
-    printf("\nDesea mostrar la cantidad de tareas y el tiempo que tomaran o tomaron?(1:si, 0:no): ");
-    scanf("%d", &busbool);
-
-    if (busbool == 1)
-    {
-        printf("elije que lista quieres mostrar: (1:Tarea Realizada, 2:Tarea pendiente, 3:Tarea en proceso)");
-        scanf("%d", &list);
-
-        switch (list)
-        {
-        case 1:
-            MostrarDatos(tareasRealizadas);
-            break;
-        case:2
-            MostrarDatos(tareasPendientes);
-            break;
-        case 3:
-            MostrarDatos(tareasEnProceso);
-        default:
-            break;
-        }
-    }
     
     
     /*-------------------liberar memoria---------------*/
@@ -162,6 +123,15 @@ int main (){
 
     return 0;
 }
+
+
+
+
+
+
+
+
+
 
 struct Nodo *CrearListaVacia(){
     return NULL;
@@ -222,7 +192,7 @@ struct Nodo *buscarNodo(struct Nodo * Start){
     }else
     {
         int id;
-        printf("ingrse el id buscado: ");
+        printf("\ningrse el id buscado: ");
         scanf("%d", &id);
         struct Nodo * aux = Start;
         while (aux && aux->T.TareaID != id)
@@ -234,14 +204,34 @@ struct Nodo *buscarNodo(struct Nodo * Start){
 }
 
 void MostrarDatos (struct Nodo * Start){
+    struct Nodo *auxi = Start;
     int cont, time;
-
-    while (Start != NULL)
+    while (auxi != NULL)
     {
+        printf("\nTarea N°%d", auxi->T.TareaID);
+        printf("\nDescripcion: %s", auxi->T.Descripcion);
+        printf("\nDuracion: %d", auxi->T.Duracion);
         cont+=1;
-        time += Start->T.Duracion
+        time += Start->T.Duracion;
+        auxi = auxi->Siguiente;
     }
-    printf("cantidad de tareas: %d", &cont);
-    printf("tiempo total: %d minutos", &time);
+    printf("\ncantidad de tareas: %d", &cont);
+    printf("\ntiempo total: %d minutos", &time);
     
+}
+
+void MoverTareas (struct Nodo ** realizadas, struct Nodo ** pendientes, struct Nodo ** enProceso, struct Nodo ** todas, tarea t){
+    int estado;
+    printf("\n¿Se realizo esta tarea?(2:en proceso, 1: si,0: no): ");
+        scanf("%d", &estado);
+        if (estado == 1)
+        {
+            InsertarNodo(realizadas, t);
+            EliminarNodo(pendientes, t);
+        }else if (estado == 2)
+        {
+            InsertarNodo(enProceso, t);
+            EliminarNodo(pendientes, t);
+        } 
+
 }
